@@ -1,9 +1,5 @@
 # Regression-and-visualization
 
-data about some people’s mathematical abilities and wages and code is about estimating how much would it help if you could raise
-someones mathematical score by 10 points
-
-;
 Overview
 
 finalR is an R Markdown project that simulates data on individual abilities and wages, explores relationships using regression models, and visualizes results. The workflow illustrates the effect of measurement error on regression estimates and uses simulations to understand variability in estimated coefficients.
