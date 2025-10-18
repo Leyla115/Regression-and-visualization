@@ -1,0 +1,164 @@
+---
+title: "finalR"
+output:
+  html_document:
+    df_print: paged
+---
+Part1
+```{r}
+mathsability<-rnorm(n=1000, mean=10, sd=2)
+mathsability  
+
+mydataframe<-data.frame(id=c(1:1000), mathsability)
+mydataframe
+
+```
+
+
+Part 2
+```{r cars}
+library(ggplot2)
+ggplot(data=mydataframe, aes(x=mathsability))+
+  geom_histogram()
+```
+
+part3
+```{r}
+otherfactors<-rnorm(n=1000, mean=0, sd=100)
+otherfactors
+
+mydataframe$otherfactors<-otherfactors
+mydataframe
+```
+
+Part4
+```{r}
+mydataframe$wage<-400+50*mydataframe$mathsability+mydataframe$otherfactors
+mydataframe
+```
+ 
+Part 5
+```{r}
+ggplot(data=mydataframe, aes(x=mathsability, y=wage))+
+  geom_point()+
+  geom_smooth()
+```
+ 
+Part 6
+```{r}
+mydataframe$measurementerror<-rnorm(n=1000, mean=0, sd=0.5)
+mydataframe
+
+mydataframe$obsscore<-mydataframe$mathsability+mydataframe$measurementerror
+mydataframe 
+```
+  
+Part 7
+```{r}
+regr1<-lm(data=mydataframe, wage~mathsability)
+summary(regr1)
+
+regr2<-lm(data=mydataframe, wage~obsscore)
+summary(regr2)
+
+library(broom)
+regrtable1<-tidy(regr1)
+regrtable1
+regrtable2<-tidy(regr2)
+regrtable2
+
+regrtable<-rbind(regrtable1,regrtable2)
+regrtable
+
+beta.ability<-regrtable$estimate[2]
+std.err.ability<-regrtable$std.error[2]
+beta.score<-regrtable$estimate[4]
+std.err.score<-regrtable$std.error[4]
+```
+
+Part 8
+```{r}
+results<-data.frame(estimate.ability=rep(NA,1000), std.err.ability=rep(NA, 1000),
+                    estimate.score=rep(NA,1000), std.err.score=rep(NA, 1000))
+results
+
+for (i in c(1:1000)){
+  
+  mathsability<-rnorm(n=1000, mean=10, sd=2)
+  
+  mydataframe<-data.frame(id=c(1:1000), mathsability)
+  
+  otherfactors<-rnorm(n=1000, mean=0, sd=100)
+  mydataframe$otherfactors<-otherfactors
+  
+  mydataframe$wage<-400+50*mydataframe$mathsability+mydataframe$otherfactors
+  
+  mydataframe$measurementerror<-rnorm(n=1000, mean=0, sd=0.5)
+  
+  mydataframe$obsscore<-mydataframe$mathsability+mydataframe$measurementerror
+   
+  regr1<-lm(data=mydataframe, wage~mathsability)
+  summary(regr1)
+  
+  regr2<-lm(data=mydataframe, wage~obsscore)
+  summary(regr2)
+  
+  library(broom)
+  regrtable1<-tidy(regr1)
+  regrtable2<-tidy(regr2)
+
+  regrtable<-rbind(regrtable1,regrtable2)
+  
+  beta.ability<-regrtable$estimate[2]
+  std.err.ability<-regrtable$std.error[2]
+  beta.score<-regrtable$estimate[4]
+  std.err.score<-regrtable$std.error[4]
+  
+  results$estimate.ability[i] <- beta.ability
+  results$std.err.ability[i]<-std.err.ability
+  results$estimate.score[i]<-beta.score
+  results$std.err.score[i]<-std.err.score
+  } 
+results
+```
+
+Part 9
+```{r}
+avgestability<-mean(results$estimate.ability)
+avgestability
+
+avgestscore<-mean(results$estimate.score)
+avgestscore
+```
+
+Part 10
+```{r}
+library(tidyr)
+results_est<-data.frame(results$estimate.ability, results$estimate.score)
+results_est
+results_est<-gather(results_est, regression_type, estimates,
+                    results.estimate.ability:results.estimate.score)
+results_est
+ggplot(results_est, aes(x=estimates, group=regression_type))+
+  geom_density(aes(color=regression_type, fill=regression_type), alpha=0.5)+
+  geom_vline(aes(xintercept=beta.ability), color='RED')
+  
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
